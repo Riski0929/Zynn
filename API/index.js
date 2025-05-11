@@ -159,9 +159,9 @@ router.get('/facebook-dl', async (req,res) => {
   }
 })
 
-router.post('/sendmail', async (req, res) => {
+router.get('/sendmail', async (req, res) => {
   try {
-    const { to, subject, message } = req.body;
+    const { to, subject, message } = req.query;
 
     if (!to || !subject || !message) {
       return res.errorJson('Semua field (to, subject, message) wajib diisi, bego!', 400);
