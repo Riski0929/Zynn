@@ -34,6 +34,19 @@
   ]
 },
     {
+  "nama": "Nulis Kiri",
+      "tags": ["Generator", "Image"],
+      "endpoint": "/api/v1/nuliskiri",
+      "deskripsi": "Buat gambar teks seperti tulisan tangan di buku.",
+      "parameter": [
+        {
+          "params": "text",
+          "example": "Anjay Alok wkakakaa",
+          "opsional": false
+        }
+      ]
+    },
+    {
   "nama": "Facebook Downloader",
   "tags": ["Downloader", "Video", "Social"],
   "endpoint": "/api/v1/facebook-dl",
