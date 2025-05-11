@@ -1634,14 +1634,14 @@ router.get('/anime-search', async (req, res) => {
 Sinopsis:
 ${originalSynopsis}`;
 
-    const geminiResponse = await axios.get(`https://nirkyy.koyeb.app/api/v1/gemini?prompt=${encodeURIComponent(aiPrompt)}`);
+    const geminiResponse = await axios.get(`https://zynn.koyeb.app/api/v1/gemini?prompt=${encodeURIComponent(aiPrompt)}`);
     const summarizedSynopsis = geminiResponse.data.data;
 
     const genres = anime.genres.map(genre => genre.name).join(', ');
     const themes = anime.themes.map(theme => theme.name).join(', ');
 
     res.succesJson({
-      thumbnail: `https://nirkyy.koyeb.app/api/v1/image-random?query=${encodeURIComponent(anime.title)}`,
+      thumbnail: `https://zynn.koyeb.app/api/v1/image-random?query=${encodeURIComponent(anime.title)}`,
       thumb_original: anime.images.jpg.image_url,
       title: anime.title,
       genre: genres,
