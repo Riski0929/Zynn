@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const { spawn } = require('child_process');
+const nodemailer = require('nodemailer');
 const cheerio = require('cheerio');
 const { handleTextQuery } = require('../lib/ai.js');
 const { pin } = require('../lib/pinterest.js');
@@ -158,6 +159,37 @@ router.get('/facebook-dl', async (req,res) => {
     res.errorJson('Waduh, server lagi ngadat nih! Ada error internal, coba lagi nanti ya.', 500)
   }
 })
+
+router.post('/sendmail', async (req, res) => {
+  try {
+    const { to, subject, message } = req.body;
+
+    if (!to || !subject || !message) {
+      return res.errorJson('Semua field (to, subject, message) wajib diisi, bego!', 400);
+    }
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
+
+    const mailOptions = {
+      from: `"Zynn Bot" <${process.env.EMAIL_USER}>`,
+      to,
+      subject,
+      text: message
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.send({ status: true, message: 'Email berhasil dikirim.' });
+  } catch (error) {
+    res.status(500).send({ status: false, message: 'Gagal mengirim email.', error: error.message });
+  }
+});
 
 router.get('/nuliskiri', async (req, res) => {
   try {
