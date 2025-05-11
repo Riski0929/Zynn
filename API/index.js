@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
+const { spawn } = require('child_process');
 const cheerio = require('cheerio');
 const { handleTextQuery } = require('../lib/ai.js');
 const { pin } = require('../lib/pinterest.js');
@@ -166,9 +167,9 @@ router.get('/nuliskiri', async (req, res) => {
       return res.errorJson('Parameter "text" wajib diisi, bego!', 400);
     }
 
-    const inputImage = '../src/nulis/images/buku/sebelumkiri.jpg';
-    const outputImage = '../src/nulis/images/buku/setelahkiri.jpg';
-    const fontPath = '../src/nulis/font/Indie-Flower.ttf';
+    const inputImage = '../nulis/sebelumkiri.jpg';
+    const outputImage = '../nulis/setelahkiri.jpg';
+    const fontPath = '../nulis/Indie-Flower.ttf';
 
     const convertProcess = spawn('convert', [
       inputImage,  // Gambar input
