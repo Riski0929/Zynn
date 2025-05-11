@@ -158,6 +158,59 @@ router.get('/facebook-dl', async (req,res) => {
   }
 })
 
+router.get('/nuliskiri', async (req, res) => {
+  try {
+    const { text } = req.query;
+
+    if (!text) {
+      return res.errorJson('Parameter "text" wajib diisi, bego!', 400);
+    }
+
+    const inputImage = '../src/nulis/images/buku/sebelumkiri.jpg';
+    const outputImage = '../src/nulis/images/buku/setelahkiri.jpg';
+    const fontPath = '../src/nulis/font/Indie-Flower.ttf';
+
+    const convertProcess = spawn('convert', [
+      inputImage,  // Gambar input
+      '-font', fontPath,  // Font yang digunakan
+      '-size', '960x1280',  // Ukuran gambar
+      '-pointsize', '23',  // Ukuran font
+      '-interline-spacing', '2',  // Jarak antar baris teks
+      '-annotate', '+140+153',  // Posisi teks
+      `text '${text}'`,  // Teks yang akan ditambahkan
+      outputImage  // Gambar output
+    ]);
+
+    convertProcess.stdout.on('data', (data) => {
+      console.log(`stdout: ${data}`);
+    });
+
+    convertProcess.stderr.on('data', (data) => {
+      console.error(`stderr: ${data}`);
+    });
+
+    convertProcess.on('close', (code) => {
+      if (code === 0) {
+        res.send({ success: true, message: 'Image processed successfully.' });
+      } else {
+        res.status(500).send({ success: false, message: 'Image processing failed.' });
+      }
+    });
+
+    convertProcess.on('error', (err) => {
+      console.error(`Error spawning process: ${err}`);
+      res.status(500).send({ success: false, message: 'Failed to spawn process.' });
+    });
+    
+  } catch (e) {
+    if (!res.headersSent) {
+      res.errorJson(`Ada error tolol di prosesnya: ${e.message}`, e.response ? e.response.status : 500);
+    } else {
+      console.error(`Error setelah headers terkirim: ${e.message}`);
+    }
+  }
+});
+
 router.get('/ssweb', async (req,res) => {
   try {
   const {
