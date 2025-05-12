@@ -1,6 +1,7 @@
 {
   "daftarTags": [
     "AI",
+    "Database",
     "Image",
     "Audio",
     "Video",
@@ -34,16 +35,26 @@
   ]
 },
     {
-  "nama": "Nulis Kiri",
-      "tags": ["Generator", "Image"],
-      "endpoint": "/api/v1/nuliskiri",
-      "deskripsi": "Buat gambar teks seperti tulisan tangan di buku.",
+  "nama": "Verifikasi",
+      "tags": ["Database", "Information"],
+      "endpoint": "/api/v1/verifikasi",
+      "deskripsi": "Verifikasi Database Bot",
       "parameter": [
-        {
-          "params": "text",
-          "example": "Anjay Alok wkakakaa",
-          "opsional": false
-        }
+    {
+      "params": "iduser",
+      "example": "628",
+      "opsional": false
+    },
+    {
+      "params": "username",
+      "example": "namamu",
+      "opsional": true
+    },
+    {
+      "params": "idchat",
+      "example": "120363288386861612@g.us",
+      "opsional": true
+    }
       ]
     },
     {
