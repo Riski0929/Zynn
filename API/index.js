@@ -35,6 +35,7 @@ const ytaudiov2 = require('../lib/ytAudioV2.js')
 const komiku = require('../lib/komiku.js')
 //---
 router.get('/editimage',require('../lib/editimg.js'))
+router.get('/tiktok',require('../lib/tiktokdl.js'))
 router.get('/tebakbom',require('../lib/tebakbom.js'))
 router.get('/verifikasi',require('../lib/verif.js'))
 router.get('/cekverif',require('../lib/cekverif.js'))
