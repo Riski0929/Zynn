@@ -1,8 +1,26 @@
 [
-  { iduser: '33392092148', nama: 'Zynn' },
-  { iduser: '6287826292008', nama: 'Didin' },
-  { iduser: '6282186594638', nama: "ha'a lah☝🏻🗿" },
-  { iduser: '6283821193815', nama: 'Giv seleranya cowo China' },
-  { iduser: '6287776955020', nama: 'SAASTRREGIONJATENG' },
-  { iduser: '6287865455504', nama: '𝑬𝒏𝒛𝒚' }
+  {
+    iduser: '33392092148',
+    username: 'Zynn'
+  },
+  {
+    iduser: '6287826292008',
+    username: 'Didin'
+  },
+  {
+    iduser: '6282186594638',
+    username: "ha'a lah☝🏻🗿"
+  },
+  {
+    iduser: '6283821193815',
+    username: 'Giv seleranya cowo China'
+  },
+  {
+    iduser: '6287776955020',
+    username: 'SAASTRREGIONJATENG'
+  },
+  {
+    iduser: '6287865455504',
+    username: '𝑬𝒏𝒛𝒚'
+  }
 ]
