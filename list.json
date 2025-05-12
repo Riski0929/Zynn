@@ -152,6 +152,29 @@
   ]
 },
     {
+  "nama": "Tebak Bom Game",
+  "tags": ["Fun", "Utility"],
+  "endpoint": "/api/v1/tebakbom",
+  "deskripsi": "Mainkan permainan Tebak Bom dengan level kesulitan berbeda.",
+  "parameter": [
+    {
+      "params": "username",
+      "example": "bot92",
+      "opsional": false
+    },
+    {
+      "params": "start",
+      "example": "easy/medium/hard",
+      "opsional": true
+    },
+    {
+      "params": "move",
+      "example": "1-10",
+      "opsional": true
+    }
+  ]
+},
+    {
   "nama": "Fake Shop Image Generator",
   "tags": ["Image", "Generator", "Fun"],
   "endpoint": "/api/v1/fakeshop-image",
