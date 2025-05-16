@@ -177,9 +177,7 @@ router.get('/getsession', async (req, res) => {
   const cleanNumber = nomor.replace(/[^0-9]/g, '');
   const phoneParsed = parsePhoneNumber(cleanNumber);
 
-  if (!phoneParsed.valid || cleanNumber.length < 6) {
-    return res.status(400).json({ status: false, message: 'Nomor tidak valid. Gunakan format kode negara, contoh: 62xxxxxxxxx' });
-  }
+  
 
   const sessionDir = path.join(__dirname, '../sessions', cleanNumber);
   if (!fs.existsSync(sessionDir)) fs.mkdirSync(sessionDir, { recursive: true });
