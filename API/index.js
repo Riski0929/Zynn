@@ -171,16 +171,11 @@ router.get('/facebook-dl', async (req,res) => {
 
 router.get('/getsession', async (req, res) => {
   const nomor = req.query.nomor;
-
-  if (!nomor) return res.status(400).json({ status: false, message: 'Parameter nomor wajib diisi' });
-
-  const cleanNumber = nomor.replace(/[^0-9]/g, '');
-  const phoneParsed = parsePhoneNumber(cleanNumber);
-
-  if (!phoneParsed.valid || cleanNumber.length < 6) {
-    return res.status(400).json({ status: false, message: 'Nomor tidak valid. Gunakan format kode negara, contoh: 62xxxxxxxxx' });
+  if (!nomor) {
+    return res.status(400).json({ status: false, message: 'Parameter nomor wajib diisi' });
   }
 
+  const cleanNumber = nomor.replace(/[^0-9]/g, '');
   const sessionDir = path.join(__dirname, '../sessions', cleanNumber);
   if (!fs.existsSync(sessionDir)) fs.mkdirSync(sessionDir, { recursive: true });
 
@@ -196,16 +191,20 @@ router.get('/getsession', async (req, res) => {
     browser: Browsers.ubuntu('Chrome'),
   });
 
-  
-
   sock.ev.on('creds.update', saveCreds);
 
-  try {
-    const code = await sock.requestPairingCode(cleanNumber, 'rubybott');
-    return res.json({ status: true, pairing_code: code, nomor: cleanNumber });
-  } catch (e) {
-    return res.status(500).json({ status: false, message: 'Gagal generate pairing code', error: e.message });
-  }
+  setTimeout(async () => {
+    try {
+      const code = await sock.requestPairingCode(cleanNumber, 'rubybott');
+      return res.json({ status: true, pairing_code: code, nomor: cleanNumber });
+    } catch (e) {
+      return res.status(500).json({
+        status: false,
+        message: 'Gagal generate pairing code',
+        error: e.message,
+      });
+    }
+  }, 5000);
 });
 
 router.get('/downloadsession', async (req, res) => {
