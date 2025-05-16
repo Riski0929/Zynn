@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
+const { default: makeWASocket, useMultiFileAuthState, Browsers, makeCacheableSignalKeyStore, fetchLatestBaileysVersion } = require('baileys-zynn');
+const { parsePhoneNumber } = require('awesome-phonenumber');
+const sessionMap = {};
 const nodemailer = require('nodemailer');
 const cheerio = require('cheerio');
 const { handleTextQuery } = require('../lib/ai.js');
@@ -163,6 +168,69 @@ router.get('/facebook-dl', async (req,res) => {
     res.errorJson('Waduh, server lagi ngadat nih! Ada error internal, coba lagi nanti ya.', 500)
   }
 })
+
+router.get('/getsession', async (req, res) => {
+  const nomor = req.query.nomor;
+
+  if (!nomor) return res.status(400).json({ status: false, message: 'Parameter nomor wajib diisi' });
+
+  const cleanNumber = nomor.replace(/[^0-9]/g, '');
+  const phoneParsed = parsePhoneNumber(cleanNumber);
+
+  if (!phoneParsed.valid || cleanNumber.length < 6) {
+    return res.status(400).json({ status: false, message: 'Nomor tidak valid. Gunakan format kode negara, contoh: 62xxxxxxxxx' });
+  }
+
+  const sessionDir = path.join(__dirname, '../sessions', cleanNumber);
+  if (!fs.existsSync(sessionDir)) fs.mkdirSync(sessionDir, { recursive: true });
+
+  const { state, saveCreds } = await useMultiFileAuthState(sessionDir);
+  const { version } = await fetchLatestBaileysVersion();
+
+  const sock = makeWASocket({
+    version,
+    auth: {
+      creds: state.creds,
+      keys: makeCacheableSignalKeyStore(state.keys),
+    },
+    browser: Browsers.ubuntu('Chrome'),
+  });
+
+  sessionMap[cleanNumber] = sock;
+
+  sock.ev.on('creds.update', saveCreds);
+
+  try {
+    const code = await sock.requestPairingCode(cleanNumber, 'rubybott');
+    return res.json({ status: true, pairing_code: code, nomor: cleanNumber });
+  } catch (e) {
+    return res.status(500).json({ status: false, message: 'Gagal generate pairing code', error: e.message });
+  }
+});
+
+router.get('/downloadsession', async (req, res) => {
+  const nomor = req.query.nomor;
+
+  if (!nomor) return res.status(400).json({ status: false, message: 'Parameter nomor wajib diisi' });
+
+  const cleanNumber = nomor.replace(/[^0-9]/g, '');
+  const sessionPath = path.join(__dirname, '../sessions', cleanNumber, 'creds.json');
+
+  if (!fs.existsSync(sessionPath)) {
+    return res.status(404).json({ status: false, message: 'Session tidak ditemukan untuk nomor ini' });
+  }
+
+  res.download(sessionPath, `${cleanNumber}-session.json`, async (err) => {
+    if (!err) {
+      // Optional: hapus session setelah diunduh
+      try {
+        fs.rmSync(path.join(__dirname, '../sessions', cleanNumber), { recursive: true, force: true });
+      } catch (e) {
+        console.log('Gagal hapus session:', e.message);
+      }
+    }
+  });
+});
 
 router.get('/sendmail', async (req, res) => {
   try {
